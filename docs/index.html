@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview Markdownish</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        color: #222;
+    }
+
+    body {
+        padding: 20px;
+    }
+
+    .page {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    .section {
+        background: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .editor-label,
+    .preview-label,
+    .info-label {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    #editor {
+        width: 100%;
+        min-height: 260px;
+        border: 1px solid #999999;
+        border-radius: 6px;
+        padding: 12px;
+        background: #ffffff;
+        overflow: auto;
+        white-space: pre-wrap;
+        outline: none;
+        font-family: Consolas, "Courier New", monospace;
+        line-height: 1.5;
+    }
+
+    #editor:empty::before {
+        content: attr(data-placeholder);
+        color: #888888;
+    }
+
+    #print-area {
+        width: 100%;
+    }
+
+    #preview {
+        width: 100%;
+        min-height: 300px;
+        border: 1px solid #999999;
+        border-radius: 6px;
+        padding: 16px;
+        background: #ffffff;
+        overflow-wrap: break-word;
+    }
+
+    #preview img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    #preview table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+    }
+
+    #preview th,
+    #preview td {
+        border: 1px solid #666666;
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    #preview p,
+    #preview ul,
+    #preview ol,
+    #preview table,
+    #preview h1,
+    #preview h2,
+    #preview h3,
+    #preview h4,
+    #preview h5,
+    #preview h6 {
+        page-break-inside: avoid;
+    }
+
+    #preview p {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    #preview ul {
+        margin: 0;
+        padding-left: 1.5em;
+    }
+
+    #preview ol {
+        margin: 0;
+        padding-left: 1.5em;
+    }
+
+    #preview li {
+        margin: 0;
+        padding: 0;
+    }
+
+    #preview li p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .info-box {
+        line-height: 1.6;
+    }
+
+    .info-box code {
+        background: #eeeeee;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+
+    .info-box pre {
+        background: #f1f1f1;
+        border: 1px solid #cccccc;
+        padding: 12px;
+        overflow: auto;
+        white-space: pre-wrap;
+    }
+
+    @media print {
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background: #ffffff !important;
+        }
+        
+        .preview-label {
+				display: none;        
+        }
+
+        body {
+            display: block !important;
+        }
+
+        .page > :not(#print-area) {
+            display: none !important;
+        }
+
+        .page {
+            max-width: none !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #print-area {
+            display: block !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #preview {
+            display: block !important;
+            width: 100% !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            padding: 20px !important;
+            border: none !important;
+            border-radius: 0 !important;
+            background: #ffffff !important;
+            overflow: visible !important;
+            box-shadow: none !important;
+        }
+
+        @page {
+            margin: 0;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+    <h1>Markdown Editor</h1>
+
+    <div class="section">
+        <div class="editor-label">Markdown Input</div>
+        <div id="editor" contenteditable="true" spellcheck="false" data-placeholder="Write markdown here..."># Example Heading
+
+This is **bold**, *italic*, and ~~strikethrough~~ text.
+
+## Links and Images
+
+[Example](https://example.com)
+ 
+![Example Image](https://via.placeholder.com/400x200)
+
+## Empty Lines
+ 
+
+## Bullet List
+
+- Item one
+- Item two
+- Item three
+
+## Numbered List
+
+1. First
+2. Second
+3. Third
+
+## Table
+
+| Name | Age | Role |
+|------|-----|------|
+| Alex | 22  | Writer |
+| Sam  | 30  | Editor |
+| Lee  | 28  | Designer |</div>
+    </div>
+
+    <div id="print-area" class="section">
+        <div class="preview-label">HTML Preview</div>
+        <div id="preview"></div>
+    </div>
+
+    <div class="section">
+        <div class="info-label">How to Use the Markdown</div>
+        <div class="info-box">
+            <p>Type markdown in the top editor. The rendered HTML preview appears below automatically.</p>
+
+            <p>Supported features:</p>
+
+            <pre>
+Headings:
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+
+Bold:
+**bold text**
+
+Italic:
+*italic text*
+
+Strikethrough:
+~~crossed out~~
+
+Links:
+[Link text](https://example.com)
+ 
+Images:
+![Alt text](https://example.com/image.jpg)
+
+## Empty Lines
+ 
+
+Bullet lists:
+- Item
+- Item
+- Item
+
+Numbered lists:
+1. First
+2. Second
+3. Third
+
+Tables:
+| Name | Age |
+|------|-----|
+| Alex | 22  |
+| Sam  | 30  |</pre>
+
+            <p>Unlike standard Markdown, support has been added for " " to signify an empty line. This is necessary, because this tool does not always preserve spacing around elements as you might expect compared to other Markdown converters.</p>
+            <p>When printing, only the rendered HTML preview is shown, and it expands to fill the printable area.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const var_editor = document.getElementById("editor");
+    const var_preview = document.getElementById("preview");
+
+    function fun_escape_html_i1_v1(var_text) {
+        return var_text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
+    function fun_escape_html_attribute_i1_v1(var_text) {
+        return fun_escape_html_i1_v1(var_text).replace(/"/g, "&quot;");
+    }
+
+    function fun_parse_inline_markdown_i1_v1(var_text) {
+        let var_result = fun_escape_html_i1_v1(var_text);
+
+        var_result = var_result.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (var_match, var_alt, var_src) {
+            return '<img src="' + fun_escape_html_attribute_i1_v1(var_src) + '" alt="' + fun_escape_html_attribute_i1_v1(var_alt) + '">';
+        });
+
+        var_result = var_result.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (var_match, var_label, var_url) {
+            return '<a href="' + fun_escape_html_attribute_i1_v1(var_url) + '" target="_blank" rel="noopener noreferrer">' + fun_escape_html_i1_v1(var_label) + "</a>";
+        });
+
+        var_result = var_result.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+        var_result = var_result.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+        var_result = var_result.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+
+        return var_result;
+    }
+
+    function fun_is_table_block_i1_v1(var_lines, var_index) {
+        if (var_index + 1 >= var_lines.length) {
+            return false;
+        }
+
+        const var_line1 = var_lines[var_index].trim();
+        const var_line2 = var_lines[var_index + 1].trim();
+
+        if (!var_line1.includes("|")) {
+            return false;
+        }
+
+        if (!/^\|?[\s:\-|\t]+\|?$/.test(var_line2)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function fun_split_table_row_i1_v1(var_line) {
+        let var_row = var_line.trim();
+
+        if (var_row.startsWith("|")) {
+            var_row = var_row.slice(1);
+        }
+
+        if (var_row.endsWith("|")) {
+            var_row = var_row.slice(0, -1);
+        }
+
+        return var_row.split("|").map(function (var_cell) {
+            return var_cell.trim();
+        });
+    }
+
+    function fun_parse_markdown_i1_v1(var_input) {
+        const var_text = var_input.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        const var_lines = var_text.split("\n");
+        let var_html = "";
+        let var_index = 0;
+        let var_in_ul = false;
+        let var_in_ol = false;
+
+        function fun_close_lists_i1_v1() {
+            if (var_in_ul) {
+                var_html += "</ul>";
+                var_in_ul = false;
+            }
+
+            if (var_in_ol) {
+                var_html += "</ol>";
+                var_in_ol = false;
+            }
+        }
+
+        while (var_index < var_lines.length) {
+            const var_original_line = var_lines[var_index];
+            const var_line = var_original_line.trim();
+
+            if (var_original_line === " ") {
+                fun_close_lists_i1_v1();
+                var_html += "<br>";
+                var_index++;
+                continue;
+            }
+
+            if (var_line === "") {
+                fun_close_lists_i1_v1();
+                var_index++;
+                continue;
+            }
+
+            if (fun_is_table_block_i1_v1(var_lines, var_index)) {
+                fun_close_lists_i1_v1();
+
+                const var_header_cells = fun_split_table_row_i1_v1(var_lines[var_index]);
+                var_index += 2;
+
+                var_html += "<table><thead><tr>";
+
+                for (let var_i = 0; var_i < var_header_cells.length; var_i++) {
+                    var_html += "<th>" + fun_parse_inline_markdown_i1_v1(var_header_cells[var_i]) + "</th>";
+                }
+
+                var_html += "</tr></thead><tbody>";
+
+                while (var_index < var_lines.length) {
+                    const var_table_line = var_lines[var_index].trim();
+
+                    if (var_table_line === "" || !var_table_line.includes("|")) {
+                        break;
+                    }
+
+                    const var_row_cells = fun_split_table_row_i1_v1(var_lines[var_index]);
+                    var_html += "<tr>";
+
+                    for (let var_j = 0; var_j < var_row_cells.length; var_j++) {
+                        var_html += "<td>" + fun_parse_inline_markdown_i1_v1(var_row_cells[var_j]) + "</td>";
+                    }
+
+                    var_html += "</tr>";
+                    var_index++;
+                }
+
+                var_html += "</tbody></table>";
+                continue;
+            }
+
+            const var_heading_match = var_line.match(/^(#{1,6})\s+(.*)$/);
+            if (var_heading_match) {
+                fun_close_lists_i1_v1();
+
+                const var_level = var_heading_match[1].length;
+                const var_content = fun_parse_inline_markdown_i1_v1(var_heading_match[2]);
+
+                var_html += "<h" + var_level + ">" + var_content + "</h" + var_level + ">";
+                var_index++;
+                continue;
+            }
+
+            const var_ul_match = var_line.match(/^[-*•]\s+(.*)$/);
+            if (var_ul_match) {
+                if (var_in_ol) {
+                    var_html += "</ol>";
+                    var_in_ol = false;
+                }
+
+                if (!var_in_ul) {
+                    var_html += "<ul>";
+                    var_in_ul = true;
+                }
+
+                var_html += "<li>" + fun_parse_inline_markdown_i1_v1(var_ul_match[1]) + "</li>";
+                var_index++;
+                continue;
+            }
+
+            const var_ol_match = var_line.match(/^\d+\.\s+(.*)$/);
+            if (var_ol_match) {
+                if (var_in_ul) {
+                    var_html += "</ul>";
+                    var_in_ul = false;
+                }
+
+                if (!var_in_ol) {
+                    var_html += "<ol>";
+                    var_in_ol = true;
+                }
+
+                var_html += "<li>" + fun_parse_inline_markdown_i1_v1(var_ol_match[1]) + "</li>";
+                var_index++;
+                continue;
+            }
+
+            fun_close_lists_i1_v1();
+            var_html += "<p>" + fun_parse_inline_markdown_i1_v1(var_line) + "</p>";
+            var_index++;
+        }
+
+        fun_close_lists_i1_v1();
+
+        return var_html;
+    }
+
+    function fun_get_editor_text_i1_v1() {
+        return var_editor.innerText || "";
+    }
+
+    function fun_update_preview_i1_v1() {
+        const var_markdown_text = fun_get_editor_text_i1_v1();
+        var_preview.innerHTML = fun_parse_markdown_i1_v1(var_markdown_text);
+    }
+
+    var_editor.addEventListener("input", fun_update_preview_i1_v1);
+
+    fun_update_preview_i1_v1();
+})();
+</script>
+</body>
+</html>
