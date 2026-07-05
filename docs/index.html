@@ -189,6 +189,10 @@
             width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            background: #ffffff !important;
+            box-shadow: none !important;
         }
 
         #preview {
@@ -226,9 +230,6 @@ This is **bold**, *italic*, and ~~strikethrough~~ text.
  
 ![Example Image](https://via.placeholder.com/400x200)
 
-## Empty Lines
- 
-
 ## Bullet List
 
 - Item one
@@ -240,6 +241,9 @@ This is **bold**, *italic*, and ~~strikethrough~~ text.
 1. First
 2. Second
 3. Third
+
+## Empty Lines
+ 
 
 ## Table
 
@@ -286,9 +290,6 @@ Links:
 Images:
 ![Alt text](https://example.com/image.jpg)
 
-## Empty Lines
- 
-
 Bullet lists:
 - Item
 - Item
@@ -299,13 +300,16 @@ Numbered lists:
 2. Second
 3. Third
 
+## Empty Lines
+ 
+
 Tables:
 | Name | Age |
 |------|-----|
 | Alex | 22  |
 | Sam  | 30  |</pre>
 
-            <p>Unlike standard Markdown, support has been added for " " to signify an empty line. This is necessary, because this tool does not always preserve spacing around elements as you might expect compared to other Markdown converters.</p>
+				<p>This tool deviates from regular Markdown by adding support for " " which declares an empty line. This is important, because this tool doesn't apply spacing to some elements, as you would normally expect when dealing with Markdown conversions.</p>
             <p>When printing, only the rendered HTML preview is shown, and it expands to fill the printable area.</p>
         </div>
     </div>
